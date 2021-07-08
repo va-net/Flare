@@ -13,19 +13,18 @@ require_once '../classes/DB.php';
 class Installer
 {
 
-    public static function showTemplate($name) 
+    public static function showTemplate($name)
     {
 
-        if (file_exists('./templates/'.$name.'.php')) {
-            include_once './templates/'.$name.'.php';
+        if (file_exists('./templates/' . $name . '.php')) {
+            include_once './templates/' . $name . '.php';
             return true;
         } else {
             return false;
         }
-
     }
 
-    public static function createConfig($data = array()) 
+    public static function createConfig($data = array())
     {
 
         $template = file_get_contents('./templates/config.php');
@@ -33,23 +32,13 @@ class Installer
             $template = str_replace($name, $val, $template);
         }
 
-        $file = fopen('../core/config.php', 'w');
-
-        if (!$file) {
-            return false;
-        }
-
-        fwrite($file, $template);
-        fclose($file);
-
-        return true;
-
+        return file_put_contents('../core/config.php', $template) !== FALSE;
     }
 
-    public static function appendConfig($data = array()) 
+    public static function appendConfig($data = array())
     {
 
-        $currentConf = file_get_contents(__DIR__.'/../core/config.php');
+        $currentConf = file_get_contents(__DIR__ . '/../core/config.php');
         foreach ($data as $name => $val) {
             $currentConf = str_replace($name, $val, $currentConf);
         }
@@ -64,13 +53,12 @@ class Installer
         fclose($file);
 
         return true;
-
-    }   
+    }
 
     public static function setupDb()
     {
 
-        $sql = file_get_contents(__DIR__.'/db.sql');
+        $sql = file_get_contents(__DIR__ . '/db.sql');
         $db = DB::getInstance();
         if (!$db->query($sql)) {
             return false;
@@ -83,7 +71,5 @@ class Installer
             ));
         }
         return true;
-
     }
-
 }
